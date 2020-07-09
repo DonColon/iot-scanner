@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -14,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.dardan.rrafshi.commons.management.Threads;
 import com.dardan.rrafshi.scanner.BannerGrabber;
 import com.dardan.rrafshi.scanner.IotScanner;
+import com.dardan.rrafshi.scanner.model.Banner;
 
 
 public final class BannerGrabbing
@@ -30,16 +29,16 @@ public final class BannerGrabbing
 		LOGGER.info("Port scanning started at " + start);
 
 		final IotScanner iotScanner = new IotScanner();
-		final Map<Integer, String> banners = iotScanner.grabBanner(host, openPorts);
+		final List<Banner> banners = iotScanner.grabBanner(host, openPorts);
 
 		Threads.safeSleep(5, TimeUnit.SECONDS);
 
 		System.out.println("Banners at " + host + ":");
 		System.out.println("================================================================================");
-		for(final Entry<Integer, String> entry : banners.entrySet()) {
-			System.out.println("Port: " + entry.getKey());
+		for(final Banner banner : banners) {
+			System.out.println("Port: " + banner.getPort());
 			System.out.println("--------------------------------------------------------------------------------");
-			System.out.println(entry.getValue() + "\n");
+			System.out.println(banner.getContent() + "\n");
 		}
 
 		final LocalDateTime end = LocalDateTime.now();
